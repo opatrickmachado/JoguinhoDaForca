@@ -11,7 +11,7 @@ carregaListaAutomatica();
 criarPalavraSecreta();
 function criarPalavraSecreta(){
     const indexPalavra = parseInt(Math.random() * palavras.length)
-    
+
     palavraSecretaSorteada = palavras[indexPalavra].nome;
     palavraSecretaCategoria = palavras[indexPalavra].categoria;
 
@@ -56,7 +56,7 @@ function verificaLetraEscolhida(letra){
         mudarStyleLetra("tecla-" + letra, false);
         comparalistas(letra);
         montarPalavraNaTela();
-    }    
+    }
 }
 
 function mudarStyleLetra(tecla, condicao){
@@ -73,18 +73,26 @@ function mudarStyleLetra(tecla, condicao){
     
 }
 
+let acertos = 0;
+let erros = 0;
+let palavrasAcertadas = 0;
+let palavrasErradas = 0;
+
 function comparalistas(letra) {
     const pos = palavraSecretaSorteada.indexOf(letra);
     if (pos < 0) {
+        erros++;
         tentativas--;
         carregaImagemForca();
 
         if (tentativas == 0) {
+            palavrasErradas++;
             mostrarMensagemErro();
-            abreModal("Sinto Muito !", "Mas não foi dessa vez ... A palavra secreta era <br>" + palavraSecretaSorteada);
+            abreModal("Sinto Muito!", "Mas não foi dessa vez... A palavra secreta era <br>" + palavraSecretaSorteada);
             piscarBotaoJogarNovamente(true);
         }
     } else {
+        acertos++;
         mudarStyleLetra("tecla-" + letra, true);
         for (i = 0; i < palavraSecretaSorteada.length; i++) {
             if (palavraSecretaSorteada[i] == letra) {
@@ -101,11 +109,20 @@ function comparalistas(letra) {
     }
 
     if (vitoria) {
+        palavrasAcertadas++; // Aumenta a contagem de palavras acertadas
         mostrarMensagemAcerto();
         abreModal("Uhuuuuuuuul, Meus Parabéns!", "Você acertou...");
         tentativas = 0;
         piscarBotaoJogarNovamente(true);
     }
+
+}
+
+if (tentativas == 0) {
+    palavrasErradas++; // Aumenta a contagem de palavras erradas
+    mostrarMensagemErro();
+    abreModal("Sinto Muito!", "Mas não foi dessa vez... A palavra secreta era <br>" + palavraSecretaSorteada);
+    piscarBotaoJogarNovamente(true);
 }
 
 function mostrarMensagemAcertoOuErro(mensagem, acerto) {
@@ -113,26 +130,23 @@ function mostrarMensagemAcertoOuErro(mensagem, acerto) {
     mensagemDiv.textContent = mensagem;
     mensagemDiv.classList.add(acerto ? 'mensagem-acerto' : 'mensagem-erro');
     document.getElementById('status').appendChild(mensagemDiv);
+
+    // Atualiza a quantidade de acertos e erros
+    if (acerto) {
+        palavrasAcertadas++;
+    } else {
+        palavrasErradas++;
+    }
+
 }
 
 function mostrarMensagemAcerto() {
-    mostrarMensagemAcertoOuErro('Parabéns! Você acertou!', true);
+    mostrarMensagemAcertoOuErro(`Parabéns! Você acertou ${acertos} letras e errou ${erros}.`, true);
 }
 
 function mostrarMensagemErro() {
-    mostrarMensagemAcertoOuErro('Ops! Você errou!', false);
+    mostrarMensagemAcertoOuErro(`Ops! Você errou ${erros} letras e acertou ${acertos}.`, false);
 }
-
-// async function piscarBotaoJogarNovamente(){
-//     while (jogarNovamente == true) {
-//         document.getElementById("btnReiniciar").style.backgroundColor = 'red';
-//         document.getElementById("btnReiniciar").style.scale = 1.3;
-//         await atraso(500)
-//         document.getElementById("btnReiniciar").style.backgroundColor = 'yellow';
-//         document.getElementById("btnReiniciar").style.scale = 1;
-//         await atraso(500)
-//     }
-// }
 
 async function atraso(tempo){
     return new Promise(x => setTimeout(x, tempo))     
