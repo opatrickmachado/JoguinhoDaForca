@@ -6,6 +6,17 @@ let palavraSecretaSorteada;
 let palavras = [];
 let jogoAutomatico = true;
 
+const imagensForca = [];
+
+function preCarregarImagens() {
+    for (let i = 0; i <= 6; i++) {
+        imagensForca[i] = new Image();
+        imagensForca[i].src = `./img/forca${i.toString().padStart(2, '0')}.png`;
+    }
+}
+
+preCarregarImagens();
+
 carregaListaAutomatica();
 
 criarPalavraSecreta();
