@@ -516,12 +516,26 @@ function isNullOrWhiteSpace(input){
     return !input || !input.trim();
 }
 
+let palavrasJaSelecionadas = [];
+
 function sortear(){
     if(jogoAutomatico == true){
-        location.reload();  
+        location.reload();
     }
     else{
         if(palavras.length > 0){
+            let palavraSorteada;
+            do {
+                palavraSorteada = palavras[Math.floor(Math.random()*palavras.length)];
+            } while (palavrasJaSelecionadas.includes(palavraSorteada));
+            
+            palavrasJaSelecionadas.push(palavraSorteada);
+
+            // Se todas as palavras já foram selecionadas, limpa a lista
+            if (palavrasJaSelecionadas.length == palavras.length) {
+                palavrasJaSelecionadas = [];
+            }
+
             listaDinamica=[];
             criarPalavraSecreta();
             montarPalavraNaTela();
