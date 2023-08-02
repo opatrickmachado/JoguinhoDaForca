@@ -137,6 +137,32 @@ body {
     transform: rotate(-30deg);
 }
 
+#acertadas {
+    color: green;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    border: 2px solid green;
+    border-radius: 10px;
+    margin: 10px auto; /* Alinha ao centro e adiciona margem em cima e embaixo */
+    display: block; /* Adicione esta linha */
+    width: fit-content; /* Faz a borda ajustar-se ao conteúdo */
+}
+
+#erradas {
+    color: red;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    border: 2px solid red;
+    border-radius: 10px;
+    margin: 5px auto; /* Alinha ao centro e adiciona margem em cima e embaixo */
+    display: block; /* Adicione esta linha */
+    width: fit-content; /* Faz a borda ajustar-se ao conteúdo */
+}
+
 .modal-container {
     display: none;
     position: fixed;

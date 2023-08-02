@@ -15,7 +15,6 @@ function criarPalavraSecreta(){
     palavraSecretaSorteada = palavras[indexPalavra].nome;
     palavraSecretaCategoria = palavras[indexPalavra].categoria;
 
-    // console.log(palavraSecretaSorteada);
 }
 
 montarPalavraNaTela();
@@ -25,8 +24,8 @@ function montarPalavraNaTela(){
 
     const palavraTela = document.getElementById("palavra-secreta");
     palavraTela.innerHTML = "";
-    
-    for(i = 0; i < palavraSecretaSorteada.length; i++){  
+
+    for(i = 0; i < palavraSecretaSorteada.length; i++){
         if(listaDinamica[i] == undefined){
             if (palavraSecretaSorteada[i] == " ") {
                 listaDinamica[i] = " ";
@@ -75,8 +74,6 @@ function mudarStyleLetra(tecla, condicao){
 
 let acertos = 0;
 let erros = 0;
-let palavrasAcertadas = 0;
-let palavrasErradas = 0;
 
 function comparalistas(letra) {
     const pos = palavraSecretaSorteada.indexOf(letra);
@@ -86,18 +83,21 @@ function comparalistas(letra) {
         carregaImagemForca();
 
         if (tentativas == 0) {
-            palavrasErradas++;
             mostrarMensagemErro();
             abreModal("Sinto Muito!", "Mas não foi dessa vez... A palavra secreta era <br>" + palavraSecretaSorteada);
             piscarBotaoJogarNovamente(true);
         }
     } else {
-        acertos++;
-        mudarStyleLetra("tecla-" + letra, true);
+        let incrementAcertos = false; // Variável para controlar se deve incrementar 'acertos'
         for (i = 0; i < palavraSecretaSorteada.length; i++) {
             if (palavraSecretaSorteada[i] == letra) {
                 listaDinamica[i] = letra;
+                mudarStyleLetra("tecla-" + letra, true);
+                incrementAcertos = true;
             }
+        }
+        if (incrementAcertos) { // Incrementa 'acertos' apenas uma vez por tentativa
+            acertos++;
         }
     }
 
@@ -109,20 +109,11 @@ function comparalistas(letra) {
     }
 
     if (vitoria) {
-        palavrasAcertadas++; // Aumenta a contagem de palavras acertadas
         mostrarMensagemAcerto();
         abreModal("Uhuuuuuuuul, Meus Parabéns!", "Você acertou...");
         tentativas = 0;
         piscarBotaoJogarNovamente(true);
     }
-
-}
-
-if (tentativas == 0) {
-    palavrasErradas++; // Aumenta a contagem de palavras erradas
-    mostrarMensagemErro();
-    abreModal("Sinto Muito!", "Mas não foi dessa vez... A palavra secreta era <br>" + palavraSecretaSorteada);
-    piscarBotaoJogarNovamente(true);
 }
 
 function mostrarMensagemAcertoOuErro(mensagem, acerto) {
@@ -140,16 +131,30 @@ function mostrarMensagemAcertoOuErro(mensagem, acerto) {
 
 }
 
+let palavrasAcertadas = localStorage.getItem('palavrasAcertadas') || 0;
+let palavrasErradas = localStorage.getItem('palavrasErradas') || 0;
+
+function atualizarContagemPalavras() {
+    const divAcertosErros = document.getElementById('acertos-erros');
+    divAcertosErros.innerHTML = `<div id="acertadas">Palavras Acertadas: ${palavrasAcertadas}</div><div id="erradas">Palavras Erradas: ${palavrasErradas}</div>`;
+}
+
+atualizarContagemPalavras();
+
 function mostrarMensagemAcerto() {
     mostrarMensagemAcertoOuErro(`Parabéns! Você acertou ${acertos} letras e errou ${erros}.`, true);
+    localStorage.setItem('palavrasAcertadas', palavrasAcertadas);
+    atualizarContagemPalavras();
 }
 
 function mostrarMensagemErro() {
     mostrarMensagemAcertoOuErro(`Ops! Você errou ${erros} letras e acertou ${acertos}.`, false);
+    localStorage.setItem('palavrasErradas', palavrasErradas);
+    atualizarContagemPalavras();
 }
 
 async function atraso(tempo){
-    return new Promise(x => setTimeout(x, tempo))     
+    return new Promise(x => setTimeout(x, tempo))
 }
 
 function carregaImagemForca(){
